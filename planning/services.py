@@ -73,3 +73,28 @@ class JiraService(IPlanningService):
             issue for issue in self.get_current_issues()
             if not issue.get("fields", {}).get("assignee")
         ]
+
+    def get_users_issues(self):
+        assignees = {}
+        user_issue_ids = {}
+
+        for sprint in self.get_sprints():
+            for issue in self.get_issues(sprint.get("id")):
+                user = issue['fields']['assignee']
+                if user:
+                    user_key = user['displayName']
+                    issue_info = {
+                      'id': issue['id'],
+                      'summary': issue['fields']['summary'],
+                      'description': issue['fields']['description']
+                    }
+
+                    if user_key not in assignees:
+                        assignees[user_key] = []
+                        user_issue_ids[user_key] = set()
+
+                    if issue['id'] not in user_issue_ids[user_key]:
+                        assignees[user_key].append(issue_info)
+                        user_issue_ids[user_key].add(issue['id'])
+
+        return assignees
