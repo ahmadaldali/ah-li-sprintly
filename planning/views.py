@@ -17,3 +17,6 @@ class PlanningView(ViewSet):
 
     def get_users_issues(self, request):
         return Response(self.service.get_users_issues())
+
+    def get_assignable_users(self, request):
+        return Response(self.service.get_assignable_users())
