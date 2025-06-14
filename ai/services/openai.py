@@ -1,25 +1,14 @@
-from abc import ABC, abstractmethod
-from dotenv import load_dotenv
 import os
-import logging
 
 from openai import OpenAI
-
-logger = logging.getLogger(__name__)
-
-load_dotenv()
+from ai.services.base import IAIModelService
 
 
-class IAgentService(ABC):
-    @abstractmethod
-    def suggest_assigner(self, issue, issues): pass
-
-
-class OpenAIService(IAgentService):
+class OpenAIService(IAIModelService):
     def __init__(self):
         self.open_ai = OpenAI(api_key=os.getenv("OPEN_AI_API_KEY"))
 
-    def suggest_assigner(self, issue, issues):
+    def suggest_developer(self, issue, issues):
         prompt = f"""
           You are an AI assistant helping with Jira ticket analysis.
 

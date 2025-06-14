@@ -1,13 +1,13 @@
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
-from planning.services import JiraService
+from planning.services.factory import PlanningServiceFactory
 
 
 class PlanningView(ViewSet):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.service = JiraService()
+        self.service = PlanningServiceFactory.get_planning_service("jira")
 
     def get_sprints(self, request):
         return Response(self.service.get_sprints())

@@ -1,15 +1,15 @@
 from django.http import JsonResponse
 from rest_framework.viewsets import ViewSet
 
-from ai.services import AIService
+from ai.services.planning import AIPlanningService
 
 
-class AIView(ViewSet):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.service = AIService()
+class AIPlanningView(ViewSet):
+    service = None
 
-    def suggest_assigner(self, request, issue_id):
-        data = self.service.suggest_assigner(issue_id)  # returns dict
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        self.service = AIPlanningService(self.kwargs.get('service_name'))
 
-        return JsonResponse(data)
+    def suggest_assigner(self, request, issue_id, *args, **kwargs):
+        return JsonResponse(self.service.suggest_assigner(issue_id))

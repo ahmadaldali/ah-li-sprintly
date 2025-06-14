@@ -1,32 +1,12 @@
-from abc import ABC, abstractmethod
 import requests
 from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
 import os
-import logging
 
 from sprintly.error import APIError
-
-logger = logging.getLogger(__name__)
+from .base import IPlanningService
 
 load_dotenv()
-
-
-class IPlanningService(ABC):
-    @abstractmethod
-    def get_sprints(self): pass
-
-    @abstractmethod
-    def get_unassigned_current_issues(self): pass
-
-    @abstractmethod
-    def get_issues_by_user(self): pass
-
-    @abstractmethod
-    def get_assignable_users(self): pass
-
-    @abstractmethod
-    def get_issue(self, issue_id): pass
 
 
 class JiraService(IPlanningService):

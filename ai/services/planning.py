@@ -1,0 +1,17 @@
+import json
+
+from ai.services.base import IAIPlanningService
+from ai.services.factory import AIModelServiceFactory
+from planning.services.factory import PlanningServiceFactory
+
+
+class AIPlanningService(IAIPlanningService):
+    def __init__(self, service_name):
+        self.ai_model = AIModelServiceFactory.get_ai_agent("openai")
+        self.planning_service = PlanningServiceFactory.get_planning_service(service_name)
+
+    def suggest_assigner(self, issue_id):
+        issue = self.planning_service.get_issue(issue_id)
+        issues = self.planning_service.get_issues_by_user()
+
+        return json.loads(self.ai_model.suggest_developer(issue, issues))

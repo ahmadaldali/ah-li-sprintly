@@ -1,9 +1,12 @@
-from django.urls import path
-from .views import AIView
+from django.urls import path, include
+from .views import AIPlanningView
 
-suggest_assigner = AIView.as_view({'get': 'suggest_assigner'})
+suggest_assigner = AIPlanningView.as_view({'get': 'suggest_assigner'})
 
-urlpatterns = [
-    path('suggest-assigner/<int:issue_id>', suggest_assigner, name='suggest-assigner'),
+planning_service_urlpatterns = [
+  path('suggest-assigner/<int:issue_id>', suggest_assigner, name='suggest-assigner'),
 ]
 
+urlpatterns = [
+  path('<str:service_name>/', include(planning_service_urlpatterns)),
+]
