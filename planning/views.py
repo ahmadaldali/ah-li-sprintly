@@ -15,8 +15,12 @@ class PlanningView(ViewSet):
     def get_unassigned_current_issues(self, request):
         return Response(self.service.get_unassigned_current_issues())
 
-    def get_users_issues(self, request):
-        return Response(self.service.get_users_issues())
+    def get_issues_by_user(self, request):
+        return Response(self.service.get_issues_by_user())
 
     def get_assignable_users(self, request):
         return Response(self.service.get_assignable_users())
+
+    def get_issue(self, request, id):
+        return Response(self.service.get_issue(id))
+
