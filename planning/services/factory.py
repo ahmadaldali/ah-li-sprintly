@@ -6,7 +6,7 @@ from ..enums import PlanningServiceType
 
 class PlanningServiceFactory:
     @staticmethod
-    def get_planning_service(service: PlanningServiceType) -> IPlanningService:
+    def get_planning_service(service: str) -> IPlanningService:
         if service == PlanningServiceType.JIRA.value:
             return JiraService()
         # elif service == "trello":
