@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import PlanningView
 
 get_sprints = PlanningView.as_view({'get': 'get_sprints'})
@@ -7,7 +7,7 @@ get_issues_by_user = PlanningView.as_view({'get': 'get_issues_by_user'})
 get_assignable_users = PlanningView.as_view({'get': 'get_assignable_users'})
 get_issue = PlanningView.as_view({'get': 'get_issue'})
 
-urlpatterns = [
+planning_urlpatterns = [
     path('sprints', get_sprints, name='sprints'),
     path('unassigned-current-issues', get_unassigned_current_issues, name='unassigned-current-issues'),
     path('issues-by-users', get_issues_by_user, name='issues-by-users'),
@@ -15,3 +15,6 @@ urlpatterns = [
     path('issues/<int:id>', get_issue, name='issue'),
 ]
 
+urlpatterns = [
+  path('<str:service_name>/', include(planning_urlpatterns)),
+]

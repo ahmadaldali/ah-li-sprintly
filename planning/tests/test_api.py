@@ -5,7 +5,7 @@ from rest_framework import status
 
 class MyPlanningApiTestCase(APITestCase):
     def test_get_sprints(self):
-        url = reverse('sprints')
+        url = reverse('sprints',kwargs={'service_name': 'jira'})
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -23,7 +23,7 @@ class MyPlanningApiTestCase(APITestCase):
         self.assertEqual(first_item['state'], 'active')
 
     def test_get_issue(self):
-        url = reverse('issue', kwargs={'id': 35231})
+        url = reverse('issue', kwargs={'id': 35231, 'service_name': 'jira'})
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -36,7 +36,7 @@ class MyPlanningApiTestCase(APITestCase):
         self.assertEqual(519, response.data.get('fields').get('sprint').get('id'))
 
     def test_get_issues_by_user(self):
-        url = reverse('issues-by-users')
+        url = reverse('issues-by-users', kwargs={'service_name': 'jira'})
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
