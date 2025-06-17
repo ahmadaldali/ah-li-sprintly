@@ -50,5 +50,5 @@ class MyPlanningApiTestCase(APITestCase):
         expected_keys = {'id', 'name', 'issues'}
         self.assertTrue(expected_keys.issubset(first_item.keys()))
 
-        expected_issues_keys = {'id', 'title', 'description', 'epic'}
+        expected_issues_keys = {'id', 'title', 'description', 'epic', 'story_points'}
         self.assertTrue(expected_issues_keys.issubset(first_item.get('issues')[0]))

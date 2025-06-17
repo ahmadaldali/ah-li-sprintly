@@ -16,6 +16,7 @@ class JiraService(IPlanningService):
         self.api_token = os.getenv("JIRA_API_TOKEN")
         self.board_id = 68  # @todo to set once you connect with jira (jira connect)
         self.project_key = "YOB"  # @todo to set once you connect with jira (jira connect)
+        self.project_id = 10105  # @todo to set once you connect with jira (jira connect)
         self.auth = HTTPBasicAuth(self.email, self.api_token)
         self.base_url = f"https://{self.domain}/rest/agile/1.0"
         self.rest_api_url = f"https://{self.domain}/rest/api/3"
@@ -50,7 +51,8 @@ class JiraService(IPlanningService):
           'id': issue.get('id'),
           'title': fields.get('summary'),
           'description': fields.get('description'),
-          'epic': fields.get('epic', {}).get('summary') if fields.get('epic') else None
+          'epic': fields.get('epic', {}).get('summary') if fields.get('epic') else None,
+          'story_points': fields.get('customfield_10023') if fields.get('customfield_10023', 0) else 0
         }
 
     def get_sprints(self):
@@ -80,11 +82,10 @@ class JiraService(IPlanningService):
 
     def get_unassigned_current_issues(self):
         return [
-            issue for issue in self.get_current_issues()
+            self._format_issue(issue) for issue in self.get_current_issues()
             if not issue.get("fields", {}).get("assignee")
         ]
 
-    # get issues by active users
     def get_issues_by_user(self):
         users_by_id = {}
         user_issue_ids = {}
@@ -121,6 +122,7 @@ class JiraService(IPlanningService):
 
     def get_assignable_users(self):
         url = f"{self.rest_api_url}/user/assignable/search?project={self.project_key}"
+
         return self._get(url, {"state": "active"})
 
     def get_issue(self, issue_id):
@@ -128,3 +130,8 @@ class JiraService(IPlanningService):
         issue = self._get(url)
 
         return issue
+
+    def get_issue_types(self):
+        url = f"{self.base_url}/issuetype/project?projectId={self.project_id}"
+
+        return self._get(url)
