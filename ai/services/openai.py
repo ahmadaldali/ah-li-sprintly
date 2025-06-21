@@ -5,7 +5,6 @@ from openai import OpenAI
 from ai.services.base import IAIModelService
 from ai.services.prompt import PromptService
 from sprintly.error import APIError
-import openai
 
 
 class OpenAIService(IAIModelService):

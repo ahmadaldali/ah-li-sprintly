@@ -44,13 +44,16 @@ python manage.py runserver
 
 ## 🧠 AI App
 
-### 🔍 Suggest an Assignee
+### 🔍 Suggest an Assigner
 
 **Endpoint:**
 POST /ai/{planning_service}/suggest-assigner/<issue_id>
 
 **Example:**
 http://127.0.0.1:8000/ai/jira/suggest-assigner/35231
+
+If you want an elite process, you can try to suggest the assigner based on the epic issues only
+http://127.0.0.1:8000/ai/jira/suggest-assigner-epic/34971
 
 ```python
 {
