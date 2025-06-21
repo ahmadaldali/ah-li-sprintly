@@ -13,3 +13,6 @@ class AIPlanningView(ViewSet):
 
     def suggest_assigner(self, request, issue_id, *args, **kwargs):
         return JsonResponse(self.service.suggest_assigner(issue_id))
+
+    def suggest_assigner_epic(self, request, issue_id, *args, **kwargs):
+        return JsonResponse(self.service.suggest_assigner_by_epic(issue_id))

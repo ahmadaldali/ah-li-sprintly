@@ -55,6 +55,40 @@ class JiraService(IPlanningService):
           'story_points': fields.get('customfield_10023') if fields.get('customfield_10023', 0) else 0
         }
 
+    def _get_issues_by_user_source(self, source_items, use_sprint=False):
+        users_by_id = {}
+        user_issue_ids = {}
+
+        for user in self.get_assignable_users():
+            user_id = user.get('accountId')
+            display_name = user.get('displayName')
+
+            if not user_id or not display_name:
+                continue
+
+            users_by_id[user_id] = {
+              "id": user_id,
+              "name": display_name,
+              "issues": []
+            }
+            user_issue_ids[user_id] = set()
+
+        for item in source_items:  # item is either a sprint or an epic issue
+            issues = self.get_issues(item.get("id")) if use_sprint else [item]
+            for issue in issues:
+                fields = issue.get("fields", {})
+                assignee = fields.get("assignee")
+
+                if assignee:
+                    user_id = assignee.get("accountId")
+                    if user_id in users_by_id:
+                        issue_id = issue.get("id")
+                        if issue_id not in user_issue_ids[user_id]:
+                            users_by_id[user_id]["issues"].append(self._format_issue(issue))
+                            user_issue_ids[user_id].add(issue_id)
+
+        return list(users_by_id.values())
+
     def get_sprints(self):
         url = f"{self.base_url}/board/{self.board_id}/sprint"
         sprints = self._get(url).get("values", [])
@@ -75,6 +109,12 @@ class JiraService(IPlanningService):
         if not sprint_id:
             return []
         url = f"{self.base_url}/sprint/{sprint_id}/issue"
+
+        return self._get(url).get("issues", [])
+
+    def get_issues_for_epic(self, epic_key):
+        url = f"""{self.rest_api_url}/search?jql="epic link"={epic_key}"""
+
         return self._get(url).get("issues", [])
 
     def get_current_issues(self):
@@ -87,38 +127,10 @@ class JiraService(IPlanningService):
         ]
 
     def get_issues_by_user(self):
-        users_by_id = {}
-        user_issue_ids = {}
+        return self._get_issues_by_user_source(self.get_sprints(), use_sprint=True)
 
-        for user in self.get_assignable_users():
-            user_id = user.get('accountId')
-            display_name = user.get('displayName')
-
-            if not user_id or not display_name:
-                continue
-
-            users_by_id[user_id] = {
-              "id": user_id,
-              "name": display_name,
-              "issues": []
-            }
-            user_issue_ids[user_id] = set()
-
-        for sprint in self.get_sprints():
-            for issue in self.get_issues(sprint.get("id")):
-                fields = issue.get("fields", {})
-                assignee = fields.get("assignee")
-
-                if assignee:
-                    user_id = assignee.get("accountId")
-                    if user_id in users_by_id:
-
-                        issue_id = issue.get("id")
-                        if issue_id not in user_issue_ids[user_id]:
-                            users_by_id[user_id]["issues"].append(self._format_issue(issue))
-                            user_issue_ids[user_id].add(issue_id)
-
-        return list(users_by_id.values())
+    def get_issues_by_user_for_epic(self, epic_key):
+        return self._get_issues_by_user_source(self.get_issues_for_epic(epic_key), use_sprint=False)
 
     def get_assignable_users(self):
         url = f"{self.rest_api_url}/user/assignable/search?project={self.project_key}"
