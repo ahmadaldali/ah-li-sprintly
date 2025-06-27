@@ -50,9 +50,10 @@ class JiraService(IPlanningService):
         return {
           'id': issue.get('id'),
           'title': fields.get('summary'),
-          'description': fields.get('description'),
+          #'description': fields.get('description'),
           'epic': fields.get('epic', {}).get('summary') if fields.get('epic') else None,
-          'story_points': fields.get('customfield_10023') if fields.get('customfield_10023', 0) else 0
+          'story_points': fields.get('customfield_10023') if fields.get('customfield_10023', 0) else 0,
+          'sprints': len(fields.get('closedSprints', []))
         }
 
     def _get_issues_by_user_source(self, source_items, use_sprint=False):

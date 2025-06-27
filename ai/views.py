@@ -16,3 +16,6 @@ class AIPlanningView(ViewSet):
 
     def suggest_assigner_epic(self, request, issue_id, *args, **kwargs):
         return JsonResponse(self.service.suggest_assigner_by_epic(issue_id))
+
+    def predict_efficient_developer(self, request, *args, **kwargs):
+        return JsonResponse(self.service.predict_efficient_developer())

@@ -27,5 +27,14 @@ class AIPlanningService(IAIPlanningService):
 
         raise APIError("This service is not provided for this issue", 405)
 
+    def predict_efficient_developer(self):
+        issues = self.planning_service.get_issues_by_user()
+
+        res = self.ai_model.predict_efficient_developer(issues)
+
+        print(res)
+
+        return json.loads(res)
+
 
 
