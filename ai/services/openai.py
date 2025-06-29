@@ -13,11 +13,11 @@ class OpenAIService(IAIModelService):
         # self.model = "gpt-4o-mini"
         self.model = "gpt-4.1"
 
-    def _get_ai_response(self, prompt):
+    def _get_ai_response(self, messages):
         try:
             response = self.open_ai.chat.completions.create(
                 model=self.model,
-                messages=[{"role": "user", "content": prompt}],
+                messages=messages,
                 temperature=0.5,
             )
             return response.choices[0].message.content.strip()
@@ -32,9 +32,9 @@ class OpenAIService(IAIModelService):
     def suggest_developer(self, issue, issues):
         prompt = self.prompt_service.suggest_developer_prompt(issue, issues)
 
-        return self._get_ai_response(prompt)
+        return self._get_ai_response([{"role": "user", "content": prompt}])
 
     def predict_efficient_developer(self, issues):
         prompt = self.prompt_service.predict_efficient_developer_prompt(issues)
 
-        return self._get_ai_response(prompt)
+        return self._get_ai_response([{"role": "user", "content": prompt}])

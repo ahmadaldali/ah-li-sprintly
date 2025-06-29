@@ -29,12 +29,8 @@ class AIPlanningService(IAIPlanningService):
 
     def predict_efficient_developer(self):
         issues = self.planning_service.get_issues_by_user()
-
-        res = self.ai_model.predict_efficient_developer(issues)
-
-        print(res)
-
-        return json.loads(res)
+        
+        return json.loads(self.ai_model.predict_efficient_developer(issues))
 
 
 
