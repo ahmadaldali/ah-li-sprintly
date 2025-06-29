@@ -18,4 +18,10 @@ class AIPlanningView(ViewSet):
         return JsonResponse(self.service.suggest_assigner_by_epic(issue_id))
 
     def predict_efficient_developer(self, request, *args, **kwargs):
-        return JsonResponse(self.service.predict_efficient_developer())
+        return JsonResponse(self.service.predict_efficient_developer(session_id="12345"))
+
+    def predict_efficient_developer_followup(self, request, *args, **kwargs):
+        #  @todo: take the session id from the auth user. validate the request.
+        user_input = request.POST.get("message")
+
+        return JsonResponse(self.service.predict_efficient_developer_followup(session_id="12345", message=user_input))

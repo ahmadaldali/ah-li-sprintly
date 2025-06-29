@@ -4,6 +4,7 @@ from openai import OpenAI
 from ai.services.base import IAIModelService
 from ai.services.prompt import PromptService
 from sprintly.error import APIError
+from ..models import ChatMessage
 
 
 class OpenAIService(IAIModelService):
@@ -19,7 +20,9 @@ class OpenAIService(IAIModelService):
                 model=self.model,
                 messages=messages,
                 temperature=0.5,
+                response_format={"type": "json_object"}
             )
+
             return response.choices[0].message.content.strip()
         except requests.HTTPError as e:
             status_code = e.response.status_code if e.response else 500
@@ -34,7 +37,25 @@ class OpenAIService(IAIModelService):
 
         return self._get_ai_response([{"role": "user", "content": prompt}])
 
-    def predict_efficient_developer(self, issues):
+    def predict_efficient_developer(self, issues, session_id):
         prompt = self.prompt_service.predict_efficient_developer_prompt(issues)
 
-        return self._get_ai_response([{"role": "user", "content": prompt}])
+        #  @todo might delete the previous conversion  - start a new thread.
+
+        ChatMessage.objects.create(session_id=session_id, role="user", content=prompt)
+        ai_reply = self._get_ai_response([{"role": "user", "content": prompt}])
+        ChatMessage.objects.create(session_id=session_id, role="assistant", content=ai_reply)
+
+        return ai_reply
+
+    def predict_efficient_developer_followup(self, session_id, message):
+        ChatMessage.objects.create(session_id=session_id, role="user", content=message)
+        chat_history = ChatMessage.objects.filter(session_id=session_id).order_by("timestamp")
+        messages = [{"role": m.role, "content": m.content} for m in chat_history]
+
+        # @todo make sure message.length > 3 , they initial predication was made
+
+        ai_reply = self._get_ai_response(messages)
+        ChatMessage.objects.create(session_id=session_id, role="assistant", content=ai_reply)
+
+        return ai_reply
