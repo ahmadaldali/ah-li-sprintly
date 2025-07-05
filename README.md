@@ -65,6 +65,38 @@ http://127.0.0.1:8000/ai/jira/suggest-assigner-epic/34971
 }
 ```
 
+### 🔍 Predict efficient developer
+
+**Endpoint:**
+POST /ai/{planning_service}/predict-efficient-developer
+
+**Example:**
+http://127.0.0.1:8000/ai/jira/predict-efficient-developer
+
+```python
+{
+  "developer": "<name of the most suitable developer>",
+  "developer_id": "<id of the most suitable developer>",
+  "summary": {
+            <developer_name>: {
+                "issues_completed",
+                "average_story_points_per_sprint",
+                "average_story_points",
+                "average_sprint_transitions",
+              }
+  }
+}
+```
+To get clarification about the result and discuss the result, you can use the following endpoint
+
+**Endpoint:**
+POST /ai/{planning_service}/predict-efficient-developer-followup
+
+**Example:**
+http://127.0.0.1:8000/ai/jira/predict-efficient-developer-followup
+
+---
+
 ## 📋 Planning App
 
 ### 🧾 Get Unassigned Issues in Current Sprint
