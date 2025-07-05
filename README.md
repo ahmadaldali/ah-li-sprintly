@@ -64,6 +64,7 @@ http://127.0.0.1:8000/ai/jira/suggest-assigner-epic/34971
   "story_points": "<The estimated effort for this task>"
 }
 ```
+![Assign developer](documentation/images/assign%20developer.png)
 
 ### 🔍 Predict efficient developer
 
@@ -77,6 +78,7 @@ http://127.0.0.1:8000/ai/jira/predict-efficient-developer
 {
   "developer": "<name of the most suitable developer>",
   "developer_id": "<id of the most suitable developer>",
+  "reason": "short explaniation",
   "summary": {
             <developer_name>: {
                 "issues_completed",
@@ -87,6 +89,8 @@ http://127.0.0.1:8000/ai/jira/predict-efficient-developer
   }
 }
 ```
+![Predict](documentation/images/predict-1.png)
+
 To get clarification about the result and discuss the result, you can use the following endpoint
 
 **Endpoint:**
@@ -95,6 +99,9 @@ POST /ai/{planning_service}/predict-efficient-developer-followup
 **Example:**
 http://127.0.0.1:8000/ai/jira/predict-efficient-developer-followup
 
+![Predict](documentation/images/predict-2.png)
+
+![Predict](documentation/images/predict-3.png)
 ---
 
 ## 📋 Planning App
